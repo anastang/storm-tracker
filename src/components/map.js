@@ -79,12 +79,14 @@
 
 // export default Map;
 
-
-import React from 'react';
+import { useState } from 'react'
 import GoogleMapReact from 'google-map-react';
 import LocationMarker from './LocationMarker';
+import LocationInfoBox from './LocationInfoBox';
 
 const Map = ({ eventData, center, zoom }) => {
+  const [locationInfo, setLocationInfo] = useState(null)
+
   // Flatten and map through the eventData to create markers for each geometry point
   const markers = eventData.flatMap(ev => 
     ev.categories[0].id === 10
@@ -100,6 +102,7 @@ const Map = ({ eventData, center, zoom }) => {
               key={`${ev.date}-${index}`} // Ensure unique keys for each marker
               lat={lat}
               lng={lng}
+              onClick={() => setLocationInfo( { id: ev.id, title: ev.title})}            
             />
           );
         })
@@ -115,7 +118,8 @@ const Map = ({ eventData, center, zoom }) => {
       >
         {markers}
       </GoogleMapReact>
-    </div>
+      {locationInfo && <LocationInfoBox info={locationInfo} /> }
+    </div> 
   );
 };
 
